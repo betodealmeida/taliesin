@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import pytest
 from taliesin.skeleton import fib
 

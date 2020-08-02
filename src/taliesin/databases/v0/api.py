@@ -1,3 +1,4 @@
+import json
 from typing import Any
 from typing import Dict
 from typing import List
@@ -18,4 +19,4 @@ schema = DatabaseSchema(many=True)
 def databases() -> Response:
     databases: List[Database] = Database.query.all()
     payload: Dict[str, Any] = schema.dump(databases)
-    return jsonify(payload)
+    return Response(json.dumps(payload), mimetype="application/json")

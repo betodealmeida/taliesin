@@ -1,7 +1,9 @@
 from sqlalchemy import Column
 from sqlalchemy import Integer
+from sqlalchemy import orm
 from sqlalchemy import String
 from sqlalchemy.orm import relationship
+from taliesin.connectors.v0.helpers import get_connectors
 from taliesin.connectors.v0.models import Connector
 from taliesin.database import Base
 
@@ -19,5 +21,10 @@ class Database(Base):
         self.description = description
         self.connector = connector
 
+    @orm.reconstructor
+    def load_connection(self) -> None:
+        connectors = get_connectors()
+        self.connection = connectors[self.connector.name](**self.connector.parameters)
+
     def __repr__(self) -> str:
-        return "<Database %r (%r)>" % (self.name, self.description)
+        return f"<Database {self.name!r} ({self.description!r})>"

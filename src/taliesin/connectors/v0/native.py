@@ -1,5 +1,13 @@
+from datetime import datetime
+from datetime import timezone
+
+import apsw
 from taliesin.connectors.v0.base import BaseConnector
 from taliesin.queries.v0.models import Query
+
+
+def row_factory(cursor, row):
+    return {k[0]: row[i] for i, k in enumerate(cursor.getdescription())}
 
 
 class NativeConnector(BaseConnector):
@@ -22,10 +30,16 @@ class NativeConnector(BaseConnector):
     }
 
     def __init__(self, path):
-        self.path = path
+        self.connection = apsw.Connection(path)
+        self.connection.setrowtrace(row_factory)
 
     def submit_query(self, query: Query, **connector_kwargs: str) -> Query:
-        pass
+        query.scheduled = datetime.now(timezone.utc)
+        cursor = self.connection.cursor()
 
-    def get_query(self, query_id: str, **connector_kwargs: str) -> Query:
-        pass
+        query.started = datetime.now(timezone.utc)
+        query.executed_query = query.submitted_query
+        query.results = list(cursor.execute(query.executed_query))
+        query.ended = datetime.now(timezone.utc)
+
+        return query

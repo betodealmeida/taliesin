@@ -1,3 +1,4 @@
+[ ] Settings
 [ ] Auth
 [ ] Results backend
 [ ] Sync and async queries

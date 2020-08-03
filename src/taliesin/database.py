@@ -19,5 +19,6 @@ def init_db() -> None:
     # you will have to import them first before calling init_db()
     import taliesin.connectors.v0.models
     import taliesin.databases.v0.models
+    import taliesin.queries.v0.models
 
     Base.metadata.create_all(bind=engine)

@@ -7,3 +7,4 @@ def test_connector(db_session):
     db_session.commit()
 
     assert db_session.query(Connector).all() == [connector]
+    assert str(connector) == "<Connector 'native'>"

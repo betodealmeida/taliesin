@@ -7,7 +7,7 @@ from sqlalchemy import orm
 from sqlalchemy import String
 from sqlalchemy.orm import relationship
 from taliesin.connectors.v0.base import BaseConnector
-from taliesin.connectors.v0.helpers import get_connectors
+from taliesin.connectors.v0.helpers import load_connectors
 from taliesin.connectors.v0.models import Connector
 from taliesin.database import Base
 
@@ -32,7 +32,7 @@ class Database(Base):
         self.connection = self.get_connection()
 
     def get_connection(self) -> BaseConnector:
-        connectors: Dict[str, Type[BaseConnector]] = get_connectors()
+        connectors: Dict[str, Type[BaseConnector]] = load_connectors()
         return connectors[self.connector.name](**self.connector.parameters)
 
     def __repr__(self) -> str:

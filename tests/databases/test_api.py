@@ -1,7 +1,7 @@
 import json
 
 from freezegun import freeze_time
-from taliesin.databases.v0.models import Connector
+from taliesin.connectors.v0.models import Connector
 from taliesin.databases.v0.models import Database
 
 

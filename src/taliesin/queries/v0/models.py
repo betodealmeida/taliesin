@@ -49,12 +49,8 @@ class Query(Base):
         self.scheduled = scheduled
         self.started = started
         self.ended = ended
+        # TODO: load from results backend
         self.results = results
 
-    @orm.reconstructor
-    def load_results(self) -> None:
-        # TODO: load from results backend
-        self.results = None
-
     def __repr__(self) -> str:
-        return f"<Query {self.id!r} ({self.submitted_query!r}>"
+        return f"<Query {self.id!r} ({self.submitted_query!r})>"

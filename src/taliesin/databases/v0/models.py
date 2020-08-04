@@ -25,12 +25,15 @@ class Database(Base):
         self.description = description
         self.connector = connector
 
+        self.connection = self.get_connection()
+
     @orm.reconstructor
     def load_connection(self) -> None:
+        self.connection = self.get_connection()
+
+    def get_connection(self) -> BaseConnector:
         connectors: Dict[str, Type[BaseConnector]] = get_connectors()
-        self.connection: BaseConnector = connectors[self.connector.name](
-            **self.connector.parameters
-        )
+        return connectors[self.connector.name](**self.connector.parameters)
 
     def __repr__(self) -> str:
         return f"<Database {self.name!r} ({self.description!r})>"

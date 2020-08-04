@@ -7,6 +7,11 @@ from taliesin.app import app
 from taliesin.database import Base
 
 
+@pytest.fixture(autouse=True)
+def env_setup(monkeypatch):
+    monkeypatch.setenv("SQLALCHEMY_DATABASE_URI", ":memory:")
+
+
 @pytest.fixture(scope="session")
 def engine():
     return create_engine("sqlite://")
@@ -24,12 +29,16 @@ def tables(engine):
 
 
 @pytest.yield_fixture
-def db_session(engine, tables):
+def db_session(mocker, engine, tables):
     connection = engine.connect()
     transaction = connection.begin()
     session = scoped_session(
-        sessionmaker(autocommit=False, autoflush=False, bind=engine),
+        sessionmaker(autocommit=False, autoflush=False, bind=connection),
     )
+
+    # TODO: improve this so we can mock a single object?
+    mocker.patch("taliesin.databases.v0.api.db_session", session)
+    Base.query = session.query_property()
 
     yield session
 

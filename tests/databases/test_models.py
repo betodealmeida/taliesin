@@ -15,4 +15,3 @@ def test_database(db_session):
 
     database = db_session.query(Database).first()
     assert str(database) == "<Database 'native' ('Native database')>"
-    assert database.connection == ""

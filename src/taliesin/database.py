@@ -1,4 +1,3 @@
-import os
 from typing import Any
 
 from flask import Flask

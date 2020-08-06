@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from typing import Dict
 
@@ -10,10 +11,10 @@ from taliesin.databases.v0 import api as databases_v0
 def create_app(test_config: Dict[str, Any] = None):
     app = Flask(__name__)
 
-    if test_config is None:
-        app.config.from_pyfile("settings.py", silent=True)  # pragma: no cover
-    else:
+    if test_config is not None:
         app.config.from_mapping(test_config)
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["SQLALCHEMY_DATABASE_URI"]
 
     init_app(app)
 

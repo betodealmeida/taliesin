@@ -5,7 +5,8 @@ from taliesin.connectors.v0.models import Connector
 from taliesin.databases.v0.models import Database
 
 
-def test_get_databases(db_session, client):
+def test_get_databases(client):
+    db_session = client.application.db_session
     connector = Connector(name="native", parameters={"path": ":memory:"})
     database = Database(name="main", description="Main database", connector=connector)
     db_session.add(database)
@@ -27,7 +28,7 @@ def test_get_databases(db_session, client):
     ]
 
 
-def test_post_databases(db_session, client):
+def test_post_databases(client):
     payload = {
         "name": "main",
         "description": "Main database",
@@ -49,7 +50,8 @@ def test_post_databases(db_session, client):
     assert databases[0].id == 1
 
 
-def test_post_queries(mocker, db_session, client):
+def test_post_queries(client):
+    db_session = client.application.db_session
     connector = Connector(name="native", parameters={"path": ":memory:"})
     database = Database(name="main", description="Main database", connector=connector)
     db_session.add(database)

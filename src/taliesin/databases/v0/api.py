@@ -4,9 +4,9 @@ from typing import Dict
 from typing import List
 
 from flask import Blueprint
+from flask import current_app
 from flask import request
 from flask import Response
-from taliesin.database import db_session
 from taliesin.databases.v0.models import Database
 from taliesin.databases.v0.schemas import DatabaseSchema
 from taliesin.queries.v0.schemas import QuerySchema
@@ -29,8 +29,8 @@ def get_databases() -> Response:
 @blueprint.route("", methods=["POST"])
 def post_databases() -> Response:
     database = database_schema.load(request.json)
-    db_session.add(database)
-    db_session.commit()
+    current_app.db_session.add(database)
+    current_app.db_session.commit()
     payload = database_schema.dump(database)
     return Response(json.dumps(payload), mimetype="application/json", status=201)
 
@@ -42,11 +42,11 @@ def post_queries(database_name: str) -> Response:
     payload = request.json
     payload.setdefault("database_id", database.id)
     query = query_schema.load(payload)
-    db_session.add(query)
-    db_session.commit()
+    current_app.db_session.add(query)
+    current_app.db_session.commit()
 
     query = database.connection.submit_query(query)
-    db_session.commit()
+    current_app.db_session.commit()
 
     payload = query_schema.dump(query)
     return Response(json.dumps(payload), mimetype="application/json", status=201)
